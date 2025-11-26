@@ -32,4 +32,13 @@ class AdminController extends Controller
 
         Redirect::to("admin");
     }
+
+    /**
+     * Admin action to create a new user
+     */
+    public function actionCreateUser()
+    {
+        AdminModel::createUserByAdmin();
+        Redirect::to("admin");
+    }
 }
