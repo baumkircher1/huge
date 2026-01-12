@@ -14,3 +14,6 @@
 
   - In writeNewUserToDatabase() wird user_active direkt auf 1 gesetzt
   - Benutzer sind sofort nach Registrierung aktiv und können sich einloggen
+
+  4. Messanger Dienst Implementierung
+  - 
