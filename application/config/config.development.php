@@ -69,12 +69,13 @@ return array(
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
     /**
-     * Configuration for: Captcha size
-     * The currently used Captcha generator (https://github.com/Gregwar/Captcha) also runs without giving a size,
-     * so feel free to use ->build(); inside CaptchaModel.
+     * Configuration for: Google reCAPTCHA v2
+     * Get your keys at: https://www.google.com/recaptcha/admin
+     * RECAPTCHA_SITE_KEY: The public key used in the HTML form
+     * RECAPTCHA_SECRET_KEY: The secret key used for server-side verification
      */
-    'CAPTCHA_WIDTH' => 359,
-    'CAPTCHA_HEIGHT' => 100,
+    'RECAPTCHA_SITE_KEY' => '6LcMWk8sAAAAADb7hsRN-wLv-bB-vT42n6Zofn6Q',
+    'RECAPTCHA_SECRET_KEY' => '6LcMWk8sAAAAAIx0sSRsZFwjed_K8_FIaJ1vVVKa',
     /**
      * Configuration for: Cookies
      * 1209600 seconds = 2 weeks

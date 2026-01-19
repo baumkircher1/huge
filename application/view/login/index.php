@@ -32,6 +32,8 @@
 							3. http://stackoverflow.com/questions/13667437/how-to-add-csrf-token-to-login-form?lq=1
 					-->
 					<input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />
+                    <!-- Google reCAPTCHA v2 widget -->
+                    <div class="g-recaptcha" data-sitekey="<?php echo Config::get('RECAPTCHA_SITE_KEY'); ?>" style="margin: 10px 0;"></div>
                     <input type="submit" class="login-submit-button" value="Log in"/>
                 </form>
                 <div class="link-forgot-my-password">
@@ -48,3 +50,6 @@
         </div>
     </div>
 </div>
+
+<!-- Load the reCAPTCHA API script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

@@ -3,44 +3,57 @@
 /**
  * Class CaptchaModel
  *
- * This model class handles all the captcha stuff.
- * Currently this uses the excellent Captcha generator lib from https://github.com/Gregwar/Captcha
- * Have a look there for more options etc.
+ * This model class handles Google reCAPTCHA v2 verification.
+ * @see https://developers.google.com/recaptcha/docs/verify
  */
 class CaptchaModel
 {
     /**
-     * Generates the captcha, "returns" a real image, this is why there is header('Content-type: image/jpeg')
-     * Note: This is a very special method, as this is echoes out binary data.
+     * Verifies the reCAPTCHA response with Google's API
+     *
+     * @param string $recaptchaResponse The g-recaptcha-response from the form
+     * @return bool True if verification successful, false otherwise
      */
-    public static function generateAndShowCaptcha()
+    public static function checkCaptcha($recaptchaResponse)
     {
-        // create a captcha with the CaptchaBuilder lib (loaded via Composer)
-        $captcha = new Gregwar\Captcha\CaptchaBuilder;
-        $captcha->build(
-            Config::get('CAPTCHA_WIDTH'),
-            Config::get('CAPTCHA_HEIGHT')
-        );
-
-        // write the captcha character into session
-        Session::set('captcha', $captcha->getPhrase());
-
-        // render an image showing the characters (=the captcha)
-        header('Content-type: image/jpeg');
-        $captcha->output();
-    }
-
-    /**
-     * Checks if the entered captcha is the same like the one from the rendered image which has been saved in session
-     * @param $captcha string The captcha characters
-     * @return bool success of captcha check
-     */
-    public static function checkCaptcha($captcha)
-    {
-        if (Session::get('captcha') && ($captcha == Session::get('captcha'))) {
-            return true;
+        if (empty($recaptchaResponse)) {
+            return false;
         }
 
-        return false;
+        $secretKey = Config::get('RECAPTCHA_SECRET_KEY');
+
+        // Prepare POST data for Google verification
+        $postData = http_build_query(array(
+            'secret' => $secretKey,
+            'response' => $recaptchaResponse,
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ));
+
+        // Use file_get_contents with stream context (no cURL needed)
+        $options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'content' => $postData
+            ),
+            'ssl' => array(
+                'verify_peer' => true,
+                'verify_peer_name' => true
+            )
+        );
+
+        $context = stream_context_create($options);
+        $response = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+
+        // Check for errors
+        if ($response === false) {
+            return false;
+        }
+
+        // Decode the JSON response
+        $result = json_decode($response, true);
+
+        // Return success status from Google's response
+        return isset($result['success']) && $result['success'] === true;
     }
 }

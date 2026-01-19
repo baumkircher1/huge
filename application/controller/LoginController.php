@@ -44,7 +44,7 @@ class LoginController extends Controller
 
         // perform the login method, put result (true or false) into $login_successful
         $login_successful = LoginModel::login(
-            Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie')
+            Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie'), Request::post('g-recaptcha-response')
         );
 
         // check login status: if true, then redirect user to user/index, if false, then to login form again
@@ -106,7 +106,7 @@ class LoginController extends Controller
      */
     public function requestPasswordReset_action()
     {
-        PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('captcha'));
+        PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('g-recaptcha-response'));
         Redirect::to('login/index');
     }
 

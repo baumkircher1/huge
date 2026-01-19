@@ -60,15 +60,11 @@ class RegisterController extends Controller
     }
 
     /**
-     * Generate a captcha, write the characters into $_SESSION['captcha'] and returns a real image which will be used
-     * like this: <img src="......./login/showCaptcha" />
-     * IMPORTANT: As this action is called via <img ...> AFTER the real application has finished executing (!), the
-     * SESSION["captcha"] has no content when the application is loaded. The SESSION["captcha"] gets filled at the
-     * moment the end-user requests the <img .. >
-     * Maybe refactor this sometime.
+     * @deprecated No longer needed - replaced by Google reCAPTCHA v2
+     * Kept for backwards compatibility, returns 404 status
      */
     public function showCaptcha()
     {
-        CaptchaModel::generateAndShowCaptcha();
+        http_response_code(404);
     }
 }

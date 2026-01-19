@@ -13,11 +13,18 @@ class LoginModel
      * @param $user_name string The user's name
      * @param $user_password string The user's password
      * @param $set_remember_me_cookie mixed Marker for usage of remember-me cookie feature
+     * @param $captcha string The reCAPTCHA response
      *
      * @return bool success state
      */
-    public static function login($user_name, $user_password, $set_remember_me_cookie = null)
+    public static function login($user_name, $user_password, $set_remember_me_cookie = null, $captcha = null)
     {
+        // verify reCAPTCHA first
+        if (!CaptchaModel::checkCaptcha($captcha)) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
+            return false;
+        }
+
         // we do negative-first checks here, for simplicity empty username and empty password in one line
         if (empty($user_name) OR empty($user_password)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_FIELD_EMPTY'));
